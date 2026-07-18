@@ -22,7 +22,6 @@ def get_n_outputs():
 
 @cuda.jit
 def hlm_kernel(timesteps, nhills,
-    doy_init,
     model_output,
     precipitation,
     evapotranspiration,
@@ -68,7 +67,6 @@ def hlm_kernel(timesteps, nhills,
   stride = block_size * grid_size
   
   for i in range(start, end, stride):
-    doy = doy_init
     soil_temperature = 0
     if i < end:
       max_static = parameters[i,0]
@@ -89,8 +87,8 @@ def hlm_kernel(timesteps, nhills,
         doy+= 1/24
         
         _precipitation = precipitation[i,t] #mm/hour
-        _evapotranspiration = evapotranspiration[i,int(doy-1)] #mm/day
-        _temperature = temperature[i,int(doy-1)] #celsius
+        _evapotranspiration = evapotranspiration[i,t] #mm/day
+        _temperature = temperature[i,t] #celsius
         soil_temperature = soil_temperature + 0.33*(_temperature - soil_temperature)
         x1=0 # input to static storage [m]
         snowmelt=0
