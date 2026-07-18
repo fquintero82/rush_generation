@@ -84,8 +84,6 @@ def hlm_kernel(timesteps, nhills,
       inf_factor = parameters[i,12]
       per_factor = parameters[i,13]
       for t in range(0,(timesteps)):
-        doy+= 1/24
-        
         _precipitation = precipitation[i,t] #mm/hour
         _evapotranspiration = evapotranspiration[i,t] #mm/day
         _temperature = temperature[i,t] #celsius
@@ -303,7 +301,7 @@ def run_cuda():
     blocks_per_grid = (N + threads_per_block - 1) // threads_per_block
 
     hlm_kernel[blocks_per_grid, threads_per_block](
-      timesteps,N,doy,
+      timesteps,N,
       model_output,
       precipitation,
       evapotranspiration,
