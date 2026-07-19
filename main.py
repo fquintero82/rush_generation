@@ -13,7 +13,8 @@ def get_name_outputs():
         'STATE_SURFACE_FLOW':7,
         'STATE_INTERFLOW':8,
         'STATE_TDFLOW':9,
-        'STATE_BASEFLOW':10}
+        'STATE_BASEFLOW':10,
+        'STATE_SWE':11}
   return d
 
 def get_n_outputs():
@@ -219,9 +220,9 @@ def hlm_kernel(timesteps, nhills,
         STATE_ACTUALET=2
         model_output[STATE_ACTUALET,i,t] = CF_METER_TO_MM * out1 * area_hillslope[i] #[mm x m2]
         STATE_STATIC=3
-        model_output[STATE_STATIC,i,t] = CF_METER_TO_MM * static[i] * area_hillslope[i] # [mm x m2]
+        model_output[STATE_STATIC,i,t] = static[i]#* CF_METER_TO_MM *  area_hillslope[i] # [mm x m2]
         STATE_SURFACE=4
-        model_output[STATE_SURFACE,i,t]=  CF_METER_TO_MM * surface[i] * area_hillslope[i] # mm x m2
+        model_output[STATE_SURFACE,i,t]=   surface[i]#CF_METER_TO_MM * * area_hillslope[i] # mm x m2
         STATE_TOPLAYER=5
         #model_output[STATE_TOPLAYER,i,t]=  CF_METER_TO_MM * toplayer[i] * area_hillslope[i] # mm x m2
         model_output[STATE_TOPLAYER,i,t]=  toplayer[i] # m
@@ -236,6 +237,8 @@ def hlm_kernel(timesteps, nhills,
         model_output[STATE_TDFLOW,i,t]=  out4 * area_hillslope[i]/ float(3600) # [m3/s]
         STATE_BASEFLOW=10
         model_output[STATE_BASEFLOW,i,t]=  out5 * area_hillslope[i]/ float(3600) # [m3/s]
+        STATE_SWE=11
+        model_output[STATE_SWE,i,t]=  swe[i] # [m]
 
 
 def run_cuda():
